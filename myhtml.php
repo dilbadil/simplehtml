@@ -8,15 +8,18 @@ class MyHtml {
 	 */
 	private $tagName;
 
+
 	/**
 	 * @var $attributes
 	 */
 	private $attributes;
 
+
 	/**
 	 * @var $stringHtml
 	 */
 	private $stringHtml;
+
 
 	/**
 	 * @var htmlExplode
@@ -173,6 +176,95 @@ class MyHtml {
 		else 
 			return false;
 	}
+
+
+	/**
+	 * Get dynamic property
+	 * 
+	 * @param $property
+	 * @return mixed
+	 */
+	public function __get($property)
+	{
+ 		
+		if (property_exists($this, $property)) {
+    
+			return $this->$property;
+		
+		} else {
+
+			$attributes = $this->attributes;
+			
+			if (isset($attributes[$property]))
+				return $attributes[$property];
+
+		}
+
+	}
+
+
+	/**
+	 * Set the dynamic property
+	 * 
+	 * @param $property
+	 * @param $value
+	 */
+	public function __set($property, $value)
+	{
+		
+		if (property_exists($this, $property)) {
+    	
+    		$this->$property = $value;
+		
+		} else {
+
+			$attributes = $this->attributes;
+			
+			if (isset($attributes[$property]))
+				$this->$property = $value;
+
+		}
+	}
+
+
+	/**
+	 * Call method
+	 * 
+	 * @param $method
+	 * @param $parameters
+	 * @return mixed
+	 */
+	public function  __call($method, $parameters)
+	{
+
+		if (substr($method, 0, 3) == 'get') {
+
+			$getPropertyName = str_replace('get', '', $method);
+			$getPropertyName = strtolower($getPropertyName);
+
+			$attributes = $this->attributes;
+			
+			if (isset($attributes[$getPropertyName]))
+				return $attributes[$getPropertyName];
+
+		} else if (substr($method, 0, 3) == 'set') {
+			
+			$getPropertyName = str_replace('set', '', $method);
+			$getPropertyName = strtolower($getPropertyName);
+
+			$attributes = $this->attributes;
+			
+			if (isset($attributes[$getPropertyName])) {
+
+				$this->attributes[$getPropertyName] = $parameters[0];
+				
+				return $this;
+
+			}
+
+		}
+
+	}			
 
 }
 
