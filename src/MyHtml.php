@@ -1,5 +1,7 @@
 <?php
 
+namespace SimpleHtml;
+
 
 class MyHtml {
 
